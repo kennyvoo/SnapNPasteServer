@@ -19,12 +19,23 @@ jobs:
         registry: ghcr.io #/${{ github.actor }}/byteus_backend:v0.1
         username: ${{ github.actor }}
         password: ${{ secrets.BYTEUS_PAT }}
-    - uses: whoan/docker-build-with-cache-action@v5
+
+    - name: Start containers
+      run: docker-compose up -d --build
+    -
+      name: Build and push
+      uses: docker/build-push-action@v2
       with:
-        username: ${{ github.actor }}
-        password: ${{ secrets.BYTEUS_PAT }}
-        registry: ghcr.io
-        compose_file: docker-compose.yml
+        context: ./services/api/
+        push: true
+        tags: user/app:latest
+    
+    # - uses: whoan/docker-build-with-cache-action@v5
+    #   with:
+    #     username: ${{ github.actor }}
+    #     password: ${{ secrets.BYTEUS_PAT }}
+    #     registry: ghcr.io
+    #     compose_file: docker-compose.yml
     # -
     #     name: Build and push
     #     uses: docker/bake-action@master

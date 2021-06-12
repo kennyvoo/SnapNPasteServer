@@ -4,7 +4,7 @@ services:
   web:
     build:
        context: ./services/api
-    image: byteus:v1
+    container_name: "byteus"
     command: gunicorn main:app --bind 0.0.0.0:5000 -w 4 -k uvicorn.workers.UvicornWorker
     expose:
       - 5000
@@ -15,14 +15,14 @@ services:
       - "traefik.http.routers.fastapi.tls.certresolver=myhttpchallenge"
 
 
-
   traefik:
     image: traefik:v2.4
+    container_name: "traefik"
     command:
       - "--api.insecure=true"
       - "--providers.docker=true"
       - "--providers.docker.exposedbydefault=false"
-      # - "--entrypoints.web.address=:80"
+      - "--entrypoints.web.address=:80"
       - "--entryPoints.websecure=:443"
       - "--certificatesresolvers.myhttpchallenge.acme.httpchallenge=true"
       - "--certificatesresolvers.myhttpchallenge.acme.httpchallenge.entrypoint=web"
