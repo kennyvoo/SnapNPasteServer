@@ -30,6 +30,8 @@ jobs:
         uses: docker/bake-action@master
         with:
           push: true
+          tags: user/app:latest
+
 
 
       # This is the a separate action that sets up buildx runner
