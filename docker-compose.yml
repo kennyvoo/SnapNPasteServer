@@ -14,6 +14,7 @@ services:
       - "traefik.http.routers.fastapi.tls.certresolver=myhttpchallenge"
 
 
+
   traefik:
     image: traefik:v2.4
     command:

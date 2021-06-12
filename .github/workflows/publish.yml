@@ -16,7 +16,7 @@ jobs:
 
     - uses: docker/login-action@v1
       with:
-        registry: ghcr.io
+        registry: ghcr.io/${{ github.actor }}/byteus_backend:v0.1
         username: ${{ github.actor }}
         password: ${{ secrets.BYTEUS_PAT }}
     # - uses: whoan/docker-build-with-cache-action@v5
@@ -30,7 +30,6 @@ jobs:
         uses: docker/bake-action@master
         with:
           push: true
-          tags: user/app:latest
 
 
 
