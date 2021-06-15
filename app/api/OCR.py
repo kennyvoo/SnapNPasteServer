@@ -25,8 +25,7 @@ computervision_client = ComputerVisionClient(Config.AZURE_OCR_ENDPOINT, Cognitiv
 
 
 @router.post("")
-async def ocr(file: UploadFile=File(...)) #,User= Depends(fastapi_users.current_user(active=True, verified=True)
-):
+async def ocr(file: UploadFile=File(...)) ): #,User= Depends(fastapi_users.current_user(active=True, verified=True)
     print(type(file),'file type')
     extension = file.filename.split(".")[-1] in ("jpg", "jpeg", "png")
     if not extension:
