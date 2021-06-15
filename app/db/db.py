@@ -1,14 +1,30 @@
 import databases
 import sqlalchemy
 from fastapi import FastAPI
+from fastapi_users import models
 from fastapi_users.db import SQLAlchemyBaseUserTable, SQLAlchemyUserDatabase
 from sqlalchemy.ext.declarative import DeclarativeMeta, declarative_base
 
-from .base_class import *
-from app.core import Config 
+
+class User(models.BaseUser):
+    pass
 
 
-database = databases.Database( Config.database_url)
+class UserCreate(models.BaseUserCreate):
+    pass
+
+
+class UserUpdate(User, models.BaseUserUpdate):
+    pass
+
+
+class UserDB(User, models.BaseUserDB):
+    pass
+
+
+DATABASE_URL = "sqlite:///./test.db"
+
+database = databases.Database(DATABASE_URL)
 
 Base: DeclarativeMeta = declarative_base()
 
@@ -18,7 +34,7 @@ class UserTable(Base, SQLAlchemyBaseUserTable):
 
 
 engine = sqlalchemy.create_engine(
-    Config.database_url, connect_args={"check_same_thread": False}
+    DATABASE_URL, connect_args={"check_same_thread": False}
 )
 
 Base.metadata.create_all(engine)
@@ -27,6 +43,7 @@ users = UserTable.__table__
 user_db = SQLAlchemyUserDatabase(UserDB, database, users)
 
 app = FastAPI()
+
 
 @app.on_event("startup")
 async def startup():

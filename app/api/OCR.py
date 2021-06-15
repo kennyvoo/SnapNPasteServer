@@ -6,7 +6,7 @@ from msrest.authentication import CognitiveServicesCredentials
 
 from core import ImageProcessing
 from array import array
-from fastapi import APIRouter, UploadFile,File, Response
+from fastapi import APIRouter, UploadFile,File, Response,Depends
 from fastapi.responses import FileResponse
 from typing import Optional
 import os
@@ -17,15 +17,16 @@ import base64
 from PIL import Image
 from core import Config
 from io import BytesIO
-
-
-
+from .auth import fastapi_users
+from db.db import User
 router = APIRouter()
+
 computervision_client = ComputerVisionClient(Config.AZURE_OCR_ENDPOINT, CognitiveServicesCredentials(Config.AZURE_OCR_KEY))
 
 
 @router.post("")
-async def ocr(file: UploadFile=File(...)):
+async def ocr(file: UploadFile=File(...)) #,User= Depends(fastapi_users.current_user(active=True, verified=True)
+):
     print(type(file),'file type')
     extension = file.filename.split(".")[-1] in ("jpg", "jpeg", "png")
     if not extension:
