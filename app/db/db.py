@@ -6,20 +6,6 @@ from fastapi_users.db import SQLAlchemyBaseUserTable, SQLAlchemyUserDatabase
 from sqlalchemy.ext.declarative import DeclarativeMeta, declarative_base
 
 
-class User(models.BaseUser):
-    pass
-
-
-class UserCreate(models.BaseUserCreate):
-    pass
-
-
-class UserUpdate(User, models.BaseUserUpdate):
-    pass
-
-
-class UserDB(User, models.BaseUserDB):
-    pass
 
 
 DATABASE_URL = "sqlite:///./test.db"
@@ -42,14 +28,4 @@ Base.metadata.create_all(engine)
 users = UserTable.__table__
 user_db = SQLAlchemyUserDatabase(UserDB, database, users)
 
-app = FastAPI()
 
-
-@app.on_event("startup")
-async def startup():
-    await database.connect()
-
-
-@app.on_event("shutdown")
-async def shutdown():
-    await database.disconnect()
