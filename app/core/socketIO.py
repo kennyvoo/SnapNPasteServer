@@ -8,11 +8,19 @@ socket_app = socketio.ASGIApp(sio)
 def chat(sid,msg):
     print(msg)
 
-@sio.on("myInfo",namespace="/ws")
-def online(sid,username,device_name,isPhone):
-    #sio.enter_room(sid, username)
-    db[username][device_name]=sid  #store sid and device_name
-    update_devices_status()
+@sio.on("transfer",namespace="/ws")
+async def transfer(sid,device_name,data,mode):
+    environ= sio.get_environ(sid,namespace="/ws")
+    username=environ["HTTP_USERNAME"]
+    target_sid=db[username][device_name]
+
+    if mode=="text":
+        await sio.emit('sendtext', data ,to=target_sid,namespace="/ws")
+    elif mode=="picture":
+        await sio.emit('sendpic', data ,to=target_sid,namespace="/ws")
+    else:  #pdf
+        await sio.emit('sendPDF', data ,to=target_sid,namespace="/ws")
+    
 
 @sio.event(namespace="/ws")
 async def disconnect(sid):
@@ -20,20 +28,23 @@ async def disconnect(sid):
     print('disconnected', sid)
     environ= sio.get_environ(sid,namespace="/ws")
     username=environ["HTTP_USERNAME"]
-    if(environ["HTTP_ISPHONE"]):
+    if(environ["HTTP_ISPHONE"]=="true"):
         sio.leave_room(sid,username,namespace="/ws")
     else:
         db[username].pop(environ["HTTP_DEVICENAME"])
     await update_devices_status(username)
 
+
 @sio.event(namespace="/ws")
 async def connect(sid, environ):
     username=environ["HTTP_USERNAME"]
-    if(environ["HTTP_ISPHONE"]):
+    print('connected', sid)
+    if(environ["HTTP_ISPHONE"]=="true"):
         sio.enter_room(sid, username,namespace="/ws")  # put all mobile devices into room
     else:
         db[username][environ["HTTP_DEVICENAME"]]=sid  #store the computer sid
     await update_devices_status(username)
+
 
 
 async def update_devices_status(username):
