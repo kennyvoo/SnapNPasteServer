@@ -18,7 +18,7 @@ from PIL import Image
 from core import Config
 from io import BytesIO
 from .auth import fastapi_users
-from db.db import User
+from db.base_class import User
 router = APIRouter()
 
 computervision_client = ComputerVisionClient(Config.AZURE_OCR_ENDPOINT, CognitiveServicesCredentials(Config.AZURE_OCR_KEY))

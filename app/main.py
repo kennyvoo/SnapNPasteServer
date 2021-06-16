@@ -1,5 +1,6 @@
 from fastapi import FastAPI, Request,Depends
 from fastapi_socketio import SocketManager
+from fastapi.responses import FileResponse
 
 from api import OCR,auth
 from core.socketIO import socket_app
@@ -9,11 +10,19 @@ from db.db import database
 app = FastAPI()
 
 
-@app.get("/hello") #specify what http to use
+@app.get("/") #specify what http to use
 def hello_world(request: Request):
-    client_host = request.client.host
-    return {"client_host": client_host}
-    #return "Hello sohai"   
+    # client_host = request.client.host
+    # return {"client_host": client_host}
+    return "Hey Jude"   
+
+@app.get("/hanming") #specify what http to use
+def dwdw(request: Request):
+    #client_host = request.client.host
+    #return {"client_host": client_host}
+    #return "Hello sohai""   
+    return FileResponse("../hanming.jpeg")
+
 
 
 app.include_router(

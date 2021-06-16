@@ -2,3 +2,5 @@
 __pycache__/
 letsencrypt
 app/core/Config.py
+test.db
+hanming.jpeg
