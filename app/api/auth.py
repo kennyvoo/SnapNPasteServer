@@ -1,5 +1,5 @@
 from fastapi_users import FastAPIUsers
-from fastapi import  Request,APIRouter
+from fastapi import  Request,APIRouter,Depends, Response
 from core.security import jwt_authentication 
 from db.db import user_db
 from db.base_class import *
@@ -27,6 +27,12 @@ fastapi_users = FastAPIUsers(
     UserUpdate,
     UserDB,
 )
+
+
+@router.post("/auth/jwt/refresh")
+async def refresh_jwt(response: Response, user=Depends(fastapi_users.get_current_active_user)):
+    return await jwt_authentication.get_login_response(user, response)
+
 router.include_router(
     fastapi_users.get_auth_router(jwt_authentication), prefix="/auth/jwt"
 )
