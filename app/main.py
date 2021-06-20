@@ -31,7 +31,7 @@ def dwdw(request: Request):
 
 app.include_router(
     OCR.router,
-    prefix='/ocr',
+    prefix='',
     tags=["ocr"],
 )
 app.include_router(

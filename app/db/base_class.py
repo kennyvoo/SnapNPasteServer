@@ -1,18 +1,24 @@
 from fastapi_users import models
-
+from pydantic import UUID4, BaseModel
+import uuid
 
 class User(models.BaseUser):
-    
-    pass
+    username : str
 
 
 class UserCreate(models.BaseUserCreate):
-    pass
+    username : str
 
 
 class UserUpdate(User, models.BaseUserUpdate):
-    pass
+    username: str
 
 
 class UserDB(User, models.BaseUserDB):
-    pass
+    username : str
+
+class feedback(BaseModel):
+    id: UUID4
+    feedback: str
+    class Config:
+        orm_mode = True
