@@ -32,3 +32,4 @@ def read_user_history(user_email:str, db: Session = Depends(get_db),User= Depend
 def delete_user_history(user_email:str, db: Session = Depends(get_db),User= Depends(fastapi_users.current_user())):
     return crud.delete_all_history(db, user_email=user_email)
 
+

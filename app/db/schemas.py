@@ -20,7 +20,7 @@ class History(HistoryBase):
     class Config:
         orm_mode = True
 
-
+#User
 
 class User(models.BaseUser):
     username : str
@@ -32,12 +32,30 @@ class UserCreate(models.BaseUserCreate):
 class UserUpdate(User, models.BaseUserUpdate):
     username: str
 
-# added del user_dict['history'] at sqlalchemy line 154 to make it work
+# added del user_dict['history'] at sqlalchemy line 154 to make it
 
 class UserDB(User, models.BaseUserDB):
     username : str
     history : List[History] = []
 
+
+    class Config:
+        orm_mode = True
+
+
+###History
+class FeedbackBase(BaseModel):
+    text: str
+    user_email : str
+
+
+class FeedbackCreate(FeedbackBase):
+    pass
+
+
+class Feedback(FeedbackBase):
+    id: int
+    user_email : str
 
     class Config:
         orm_mode = True
