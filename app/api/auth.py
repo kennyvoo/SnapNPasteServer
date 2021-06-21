@@ -1,9 +1,8 @@
-from fastapi_users import FastAPIUsers
 from fastapi import  Request,APIRouter,Depends, Response
-from core.security import jwt_authentication 
-from db.db import user_db
-from db.base_class import *
 from core.Config import SECRET
+from core.fastapi_user_auth import fastapi_users
+from core.security import jwt_authentication 
+from db.schemas import *
 
 def on_after_register(user: UserDB, request: Request):
     print(f"User {user.id} has registered.")
@@ -16,18 +15,7 @@ def on_after_forgot_password(user: UserDB, token: str, request: Request):
 def after_verification_request(user: UserDB, token: str, request: Request):
     print(f"Verification requested for user {user.id}. Verification token: {token}")
 
-
 router = APIRouter()
-
-fastapi_users = FastAPIUsers(
-    user_db,
-    [jwt_authentication],
-    User,
-    UserCreate,
-    UserUpdate,
-    UserDB,
-)
-
 
 @router.post("/auth/jwt/refresh")
 async def refresh_jwt(response: Response, user=Depends(fastapi_users.get_current_active_user)):

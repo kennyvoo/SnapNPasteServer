@@ -4,7 +4,7 @@ from fastapi.responses import FileResponse,HTMLResponse
 from fastapi.templating import Jinja2Templates
 from fastapi.staticfiles import StaticFiles
 
-from api import OCR,auth
+from api import OCR,auth,history
 from core.socketIO import socket_app
 from db.db import database
 
@@ -39,6 +39,12 @@ app.include_router(
     prefix='',
     tags=["auth"],
 )
+app.include_router(
+    history.router,
+    prefix='',
+    tags=["history"],
+)
+
 
 app.mount('/ws', socket_app)
 

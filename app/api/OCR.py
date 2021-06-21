@@ -14,14 +14,14 @@ import base64
 from PIL import Image
 from core import Config
 from io import BytesIO
-from .auth import fastapi_users
-from db.base_class import User
+from core.fastapi_user_auth import fastapi_users
+from db.schemas import User
 router = APIRouter()
 
 computervision_client = ComputerVisionClient(Config.AZURE_OCR_ENDPOINT, CognitiveServicesCredentials(Config.AZURE_OCR_KEY))
 
 @router.post("/ocr/document_detection")
-async def document_detection(file: UploadFile=File(...)):
+async def document_detection(file: UploadFile=File(...),User= Depends(fastapi_users.current_user())):
     extension = file.filename.split(".")[-1] in ("jpg", "jpeg", "png")
     if not extension:
         return "Image must be jpg or png format!"
@@ -31,7 +31,7 @@ async def document_detection(file: UploadFile=File(...)):
     return response
 
 @router.post("/ocr/warped_image")
-async def warped_image(file: UploadFile=File(...),points:list=[]):
+async def warped_image(file: UploadFile=File(...),points:list=[],User= Depends(fastapi_users.current_user())):
     extension = file.filename.split(".")[-1] in ("jpg", "jpeg", "png")
     if not extension:
         return "Image must be jpg or png format!"
@@ -44,7 +44,7 @@ async def warped_image(file: UploadFile=File(...),points:list=[]):
 
 
 @router.post("/ocr/azure")
-async def ocr(file: UploadFile=File(...)): #,User= Depends(fastapi_users.current_user(active=True, verified=True)
+async def ocr(file: UploadFile=File(...),User= Depends(fastapi_users.current_user())): #,User= Depends(fastapi_users.current_user(active=True, verified=True)
     extension = file.filename.split(".")[-1] in ("jpg", "jpeg", "png")
     if not extension:
         return "Image must be jpg or png format!"
@@ -76,7 +76,7 @@ async def ocr(file: UploadFile=File(...)): #,User= Depends(fastapi_users.current
 
 
 @router.post("/ocr/azurefull")
-async def ocr(file: UploadFile=File(...)): #,User= Depends(fastapi_users.current_user(active=True, verified=True)
+async def ocr(file: UploadFile=File(...),User= Depends(fastapi_users.current_user())): #,User= Depends(fastapi_users.current_user(active=True, verified=True)
     print(type(file),'file type')
     extension = file.filename.split(".")[-1] in ("jpg", "jpeg", "png")
     if not extension:
@@ -105,7 +105,7 @@ async def ocr(file: UploadFile=File(...)): #,User= Depends(fastapi_users.current
 
 
 @router.post("/ocr")
-async def detect_document(file: UploadFile=File(...)):
+async def detect_document(file: UploadFile=File(...),User= Depends(fastapi_users.current_user())):
     """Detects document features in an image."""
     from google.cloud import vision
 

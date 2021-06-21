@@ -48,28 +48,6 @@ def document_finder(image):
     else:
         return {"bb":[int(i) for i in screenCnt.flatten()]}
 
-def document_finder(image):
-    image=read_imagefile(image)
-    eroded= image_preprocessing(image)
-    cnts = cv2.findContours(eroded.copy(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
-    cnts = imutils.grab_contours(cnts)
-    cnts = sorted(cnts, key = cv2.contourArea, reverse = True)[:5]
-    # loop over the contours
-    found=False
-    for c in cnts:
-        # approximate the contour
-        peri = cv2.arcLength(c, True)
-        approx = cv2.approxPolyDP(c, 0.02 * peri, True)
-        # if our approximated contour has four points, then we
-        # can assume that we have found our screen
-        if len(approx) == 4:
-            screenCnt = approx
-            found=True
-            break
-    if not found:
-        return {"bb":[0,0,0,image.size[1],image.size[0],image.size[1],image.size[0],0]}
-    else:
-        return {"bb":[int(i) for i in screenCnt.flatten()]}
 
 #https://www.pyimagesearch.com/2014/08/25/4-point-opencv-getperspective-transform-example/
 def order_points(pts):
