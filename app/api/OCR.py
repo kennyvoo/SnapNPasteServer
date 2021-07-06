@@ -5,6 +5,8 @@ from azure.cognitiveservices.vision.computervision.models import VisualFeatureTy
 from msrest.authentication import CognitiveServicesCredentials
 
 from core import ImageProcessing
+from core.documentScanner import DocScanner
+
 from array import array
 from fastapi import APIRouter, UploadFile,File, Response,Depends
 from fastapi.responses import FileResponse
@@ -16,28 +18,42 @@ from core import Config
 from io import BytesIO
 from core.fastapi_user_auth import fastapi_users
 from db.schemas import User
+from pydantic import BaseModel
+
 router = APIRouter()
 
 computervision_client = ComputerVisionClient(Config.AZURE_OCR_ENDPOINT, CognitiveServicesCredentials(Config.AZURE_OCR_KEY))
 
+class Data(BaseModel):
+    data: str
+
 @router.post("/ocr/document_detection")
-async def document_detection(file: UploadFile=File(...),User= Depends(fastapi_users.current_user())):
-    extension = file.filename.split(".")[-1] in ("jpg", "jpeg", "png")
-    if not extension:
-        return "Image must be jpg or png format!"
+async def document_detection(file:UploadFile=File(...),User= Depends(fastapi_users.current_user())):
+    # extension = file.filename.split(".")[-1] in ("jpg", "jpeg", "png")
+    # if not extension:
+    #     return "Image must be jpg or png format!"
     #imgstream = BytesIO(await file.read())  # convert to byte stream
-    response=ImageProcessing.document_finder(await file.read())
-    print(response)
+    #print(type(file))
+    scan=DocScanner(False)
+    # print(file.data)
+    image=ImageProcessing.read_imagefile(await file.read())
+    print('---------------')
+    # import base64
+    # image = base64.b64decode(file.data)
+    response=scan.get_document_corners(image)
+    #response=ImageProcessing.document_finder(await file.read())
+    # print(response)
     return response
 
 @router.post("/ocr/warped_image")
 async def warped_image(file: UploadFile=File(...),points:list=[],User= Depends(fastapi_users.current_user())):
-    extension = file.filename.split(".")[-1] in ("jpg", "jpeg", "png")
-    if not extension:
-        return "Image must be jpg or png format!"
+    # extension = file.filename.split(".")[-1] in ("jpg", "jpeg", "png")
+    # if not extension:
+    #     return "Image must be jpg or png format!"
     #imgstream = BytesIO(await file.read())  # convert to byte stream
+    # print(points)
     response=ImageProcessing.warped_image(await file.read(),points)
-    print(response)
+    #print(response)
     return response
 
 
@@ -123,7 +139,7 @@ async def detect_document(file: UploadFile=File(...),User= Depends(fastapi_users
     image = vision.Image(content=await file.read())
 
     response = client.document_text_detection(image=image)
-    print(response)
+    # print(response)
     # with open('outputfile.json', 'wb') as outf:
     #     outf.write(response.context)
     print(str(response.full_text_annotation.text))

@@ -32,7 +32,7 @@ class UserCreate(models.BaseUserCreate):
 class UserUpdate(User, models.BaseUserUpdate):
     username: str
 
-# added del user_dict['history'] at sqlalchemy line 154 to make it
+# added del user_dict['history'] at sqlalchemy.py line 154  and 188 to make it work, else cant link history to user.
 
 class UserDB(User, models.BaseUserDB):
     username : str

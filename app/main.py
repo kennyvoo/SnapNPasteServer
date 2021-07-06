@@ -1,4 +1,5 @@
 from fastapi import FastAPI, Request,Depends
+from fastapi.middleware.cors import CORSMiddleware
 from fastapi_socketio import SocketManager
 from fastapi.responses import FileResponse,HTMLResponse
 from fastapi.templating import Jinja2Templates
@@ -12,6 +13,24 @@ from db.db import database
 app = FastAPI()
 templates = Jinja2Templates(directory="templates")
 app.mount("/static", StaticFiles(directory="static"), name="static")
+
+
+# origins = [
+#     "http://byteus.me:8000",
+#     "http://byteus.me",
+#     "*",
+# ]
+
+origins = ["*"]
+
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 
 @app.get("/") #specify what http to use
