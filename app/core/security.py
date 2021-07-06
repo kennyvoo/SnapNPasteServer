@@ -3,5 +3,5 @@ from core import Config
 
 
 
-jwt_authentication = JWTAuthentication(secret= Config.SECRET, lifetime_seconds=3600, tokenUrl="auth/jwt/login")
+jwt_authentication = JWTAuthentication(secret= Config.SECRET, lifetime_seconds=None, tokenUrl="auth/jwt/login")
 

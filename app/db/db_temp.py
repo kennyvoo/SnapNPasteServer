@@ -4,7 +4,6 @@ from collections import defaultdict
 # Using dictionary to simulate database first :)
 
 db = defaultdict(lambda: defaultdict(dict))
-
 # from collections import defaultdict
 
 # db=defaultdict(lambda: defaultdict(dict))

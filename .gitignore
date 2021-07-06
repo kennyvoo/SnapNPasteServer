@@ -2,3 +2,9 @@
 __pycache__/
 letsencrypt
 app/core/Config.py
+app/core/googleAccount.json
+static
+templates
+test.db
+hanming.jpeg
+nohup.out
